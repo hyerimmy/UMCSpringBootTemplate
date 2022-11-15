@@ -33,6 +33,18 @@ public class BoardController {
     }
 
     @ResponseBody
+    @GetMapping("/logham")
+    public String hahaha() {
+        System.out.println("테스트");
+//        trace, debug 레벨은 Console X, 파일 로깅 X
+//        logger.trace("TRACE Level 테스트");
+//        logger.debug("DEBUG Level 테스트");
+
+
+        return "Success Test ham";
+    }
+
+    @ResponseBody
     @PostMapping("/board")    // POST 방식의 요청을 매핑하기 위한 어노테이션
     public BaseResponse<PostBoardRes> createBoard(@RequestBody PostBoardReq postBoardReq) {
         try {

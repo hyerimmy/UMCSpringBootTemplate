@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 
 @Repository //  [Persistence Layer에서 DAO를 명시하기 위해 사용]
 
-public class BoardDao 
+public class BoardDao {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired //readme 참고
