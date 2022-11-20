@@ -2,17 +2,9 @@ package com.example.demo.src.board;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.board.model.PostBoardReq;
-import com.example.demo.src.board.model.PostBoardRes;
-import com.example.demo.src.user.model.PostUserReq;
-import com.example.demo.src.user.model.PostUserRes;
-import com.example.demo.utils.JwtService;
+import com.example.demo.src.board.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import static com.example.demo.config.BaseResponseStatus.POST_USERS_EMPTY_EMAIL;
-import static com.example.demo.config.BaseResponseStatus.POST_USERS_INVALID_EMAIL;
-import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 
 
 @RestController
@@ -33,18 +25,6 @@ public class BoardController {
     }
 
     @ResponseBody
-    @GetMapping("/logham")
-    public String hahaha() {
-        System.out.println("테스트");
-//        trace, debug 레벨은 Console X, 파일 로깅 X
-//        logger.trace("TRACE Level 테스트");
-//        logger.debug("DEBUG Level 테스트");
-
-
-        return "Success Test ham";
-    }
-
-    @ResponseBody
     @PostMapping("/board")    // POST 방식의 요청을 매핑하기 위한 어노테이션
     public BaseResponse<PostBoardRes> createBoard(@RequestBody PostBoardReq postBoardReq) {
         try {
@@ -54,5 +34,51 @@ public class BoardController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+//    @ResponseBody
+//    @GetMapping("/board") // (GET) 127.0.0.1:9000/app/users/:userIdx
+//    public BaseResponse<GetBoardRes> getBoard() {
+//        // @PathVariable RESTful(URL)에서 명시된 파라미터({})를 받는 어노테이션, 이 경우 userId값을 받아옴.
+//        //  null값 or 공백값이 들어가는 경우는 적용하지 말 것
+//        //  .(dot)이 포함된 경우, .을 포함한 그 뒤가 잘려서 들어감
+//        // Get Users
+//        try {
+//            GetBoardRes getBoardRes = boardProvider.getBoard();
+//            return new BaseResponse<>(getBoardRes);
+//        } catch (BaseException exception) {
+//            return new BaseResponse<>((exception.getStatus()));
+//        }
+//
+//    }
+
+    @ResponseBody
+    @GetMapping("/board/{boardIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
+    public BaseResponse<GetBoardRes> getBoard(@PathVariable("boardIdx") int boardIdx) {
+        // @PathVariable RESTful(URL)에서 명시된 파라미터({})를 받는 어노테이션, 이 경우 userId값을 받아옴.
+        //  null값 or 공백값이 들어가는 경우는 적용하지 말 것
+        //  .(dot)이 포함된 경우, .을 포함한 그 뒤가 잘려서 들어감
+        // Get Users
+        try {
+            GetBoardRes getBoardRes = boardProvider.getBoard(boardIdx);
+            return new BaseResponse<>(getBoardRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @ResponseBody
+    @PatchMapping("/board/{boardIdx}")
+    public BaseResponse<String> modifyBoardContent(@PathVariable("boardIdx") int boardIdx, @RequestBody Board board) {
+        try {
+            PatchBoardReq patchBoardReq = new PatchBoardReq(boardIdx, board.getContent());
+            boardService.modifyBoardContent(patchBoardReq);
+
+            String result = "게시물 내용이 수정되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 
 }
